@@ -1,5 +1,6 @@
 import sys
-sys.path.append('/mnt/ve_perception/wangruihao/code/BEV-LaneDet')
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 import torch
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.utils.data import DataLoader
@@ -10,6 +11,9 @@ from models.loss import IoULoss, NDPushPullLoss
 from utils.config_util import load_config_module
 from sklearn.metrics import f1_score
 import numpy as np
+from torch.utils.tensorboard import SummaryWriter
+from tqdm import tqdm
+writer = SummaryWriter('/root/tf-logs/')
 
 
 class Combine_Model_and_Loss(torch.nn.Module):
@@ -49,6 +53,7 @@ class Combine_Model_and_Loss(torch.nn.Module):
 
 
 def train_epoch(model, dataset, optimizer, configs, epoch):
+    pbar = tqdm(dataset)
     # Last iter as mean loss of whole epoch
     model.train()
     losses_avg = {}
@@ -88,8 +93,16 @@ def train_epoch(model, dataset, optimizer, configs, epoch):
             f1_bev_seg = f1_score((target > 0.5).astype(np.int64), (pred > 0.5).astype(np.int64), zero_division=1)
             loss_iter = {"BEV Loss": loss_back_bev.item(), 'offset loss': loss_offset.item(), 'z loss': loss_z.item(),
                             "F1_BEV_seg": f1_bev_seg}
+            writer.add_scalar('Loss/BEV Loss', loss_back_bev.item(), epoch * len(dataset) + idx)
+            writer.add_scalar('Loss/Offset Loss', loss_offset.item(), epoch * len(dataset) + idx)
+            writer.add_scalar('Loss/Z Loss', loss_z.item(), epoch * len(dataset) + idx)
+            writer.add_scalar('F1_BEV_seg', f1_bev_seg, epoch * len(dataset) + idx)
+
             # losses_show = loss_iter
             print(idx, loss_iter)
+
+        pbar.set_description("Loss: %.4f" % loss_back_total.item())
+        pbar.update(1)
 
 
 def worker_function(config_file, gpu_id, checkpoint_path=None):
@@ -138,4 +151,5 @@ def worker_function(config_file, gpu_id, checkpoint_path=None):
 if __name__ == '__main__':
     import warnings
     warnings.filterwarnings("ignore")
-    worker_function('./openlane_config.py', gpu_id=[4, 5, 6, 7])
+    # worker_function('./openlane_config.py', gpu_id=[0])
+    worker_function('./tools/openlane_config.py', gpu_id=[0])

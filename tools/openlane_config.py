@@ -7,12 +7,12 @@ from loader.bev_road.openlane_data import OpenLane_dataset_with_offset,OpenLane_
 from models.model.single_camera_bev import BEV_LaneDet
 
 ''' data split '''
-train_gt_paths = '/dataset/openlane/lane3d_1000/training'
-train_image_paths = '/dataset/openlane/images/training'
-val_gt_paths = '/dataset/openlane/lane3d_1000/validation'
-val_image_paths = '/dataset/openlane/images/validation'
+train_gt_paths = '/root/workspace/bev_lane_det/dataset/openlane/lane3d_300/training'
+train_image_paths = '/root/workspace/bev_lane_det/dataset/openlane/images_training'
+val_gt_paths = '/root/workspace/bev_lane_det/dataset/openlane/lane3d_300/validation'
+val_image_paths = '/root/workspace/bev_lane_det/dataset/openlane/images_validation'
 
-model_save_path = "/dataset/model/openlane"
+model_save_path = "/root/workspace/bev_lane_det/output"
 
 input_shape = (576,1024)
 output_2d_shape = (144,256)
@@ -24,8 +24,8 @@ meter_per_pixel = 0.5 # grid size
 bev_shape = (int((x_range[1] - x_range[0]) / meter_per_pixel),int((y_range[1] - y_range[0]) / meter_per_pixel))
 
 loader_args = dict(
-    batch_size=64,
-    num_workers=12,
+    batch_size=24,
+    num_workers=18,
     shuffle=True
 )
 
