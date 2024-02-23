@@ -3,3 +3,6 @@
 /dataset
 
 __pycache__/
+
+/tf-logs
+/tmp_openlane
