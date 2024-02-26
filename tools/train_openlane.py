@@ -13,7 +13,7 @@ from sklearn.metrics import f1_score
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
-writer = SummaryWriter('/root/tf-logs/')
+writer = SummaryWriter('./tf-logs/')
 
 
 class Combine_Model_and_Loss(torch.nn.Module):

@@ -1,8 +1,12 @@
 /output
 /.vscode
 /dataset
+/data
 
 __pycache__/
 
 /tf-logs
 /tmp_openlane
+*.pth
+*.avi
+*.mp4

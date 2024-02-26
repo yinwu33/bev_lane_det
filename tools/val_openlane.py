@@ -2,8 +2,8 @@ import numpy as np
 import copy
 import time
 import sys
-sys.path.append('/mnt/ve_perception/wangruihao/code/BEV-LaneDet')
 import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 gpu_id = [0]
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = ','.join([str(i) for i in gpu_id])
@@ -19,10 +19,10 @@ from models.util.post_process import bev_instance2points_with_offset_z
 from utils.util_val.val_offical import LaneEval
 from models.model.single_camera_bev import *
 
-model_path = '/dataset/model/20220814/ep008.pth' #model path of verification
+model_path = './ep014.pth' #model path of verification
 
 ''' parameter from config '''
-config_file = './openlane_config.py'
+config_file = './tools/openlane_config.py'
 configs = load_config_module(config_file)
 gt_paths = configs.val_gt_paths
 image_paths = configs.val_image_paths
@@ -36,7 +36,7 @@ post_conf = -0.7 # Minimum confidence on the segmentation map for clustering
 post_emb_margin = 6.0 # embeding margin of different clusters
 post_min_cluster_size = 15 # The minimum number of points in a cluster
 
-tmp_save_path = '/dataset/tmp/tmp_openlane' #tmp path for save intermediate result
+tmp_save_path = './tmp_openlane' #tmp path for save intermediate result
 
 
 class PostProcessDataset(Dataset):
